@@ -22,6 +22,12 @@ export class User {
 
   @Prop()
   age: number;
+
+  @Prop()
+  deletedAt: Date;
+
+  @Prop()
+  isDeleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

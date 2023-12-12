@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { CompaniesModule } from './companies/companies.module';
+import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 
 @Module({
   imports: [
@@ -15,6 +16,10 @@ import { CompaniesModule } from './companies/companies.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
+        connectionFactory: (connection: any) => {
+          connection.plugin(softDeletePlugin);
+          return connection;
+        },
       }),
     }),
 
