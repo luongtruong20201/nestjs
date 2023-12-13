@@ -6,12 +6,16 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './interceptors/response.interceptor';
 import { LoggingInterceptor } from './interceptors/logging.interceotpr';
+import cookieParser from 'cookie-parser';
+import express from 'express';
+import path from 'path';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const configService = app.get(ConfigService);
   const reflector = app.get(Reflector);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalGuards(new JwtAuthGuard(reflector));
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   app.useGlobalInterceptors(new LoggingInterceptor());
@@ -21,11 +25,15 @@ async function bootstrap() {
     defaultVersion: ['1'],
   });
 
+  app.use(cookieParser());
+  app.use(express.json());
+  app.use(express.static(path.resolve(__dirname, '..', 'public')));
+  app.use(helmet());
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
-    optionsSuccessStatus: 204,
+    credentials: true,
   });
   const port = configService.get<string>('PORT');
   await app.listen(port);
