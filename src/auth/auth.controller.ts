@@ -1,10 +1,19 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
-import { Public, ResponseMessage } from 'src/decorators/customize';
+import { Public, ResponseMessage, User } from 'src/decorators/customize';
 import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -27,5 +36,11 @@ export class AuthController {
   async register(@Body() registerUserDto: RegisterUserDto) {
     const user = await this.usersService.register(registerUserDto);
     return { _id: user._id, createdAt: user.createdAt };
+  }
+
+  @ResponseMessage('Register a new user')
+  @Get('account')
+  account(@User() user: IUser) {
+    return { user };
   }
 }
