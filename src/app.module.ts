@@ -7,6 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CompaniesModule } from './companies/companies.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { TransformInterceptor } from './interceptors/response.interceptor';
 
 @Module({
   imports: [
@@ -30,6 +32,10 @@ import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
   controllers: [AppController],
   providers: [
     AppService,
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: TransformInterceptor,
+    // },
     // {
     //   provide: APP_GUARD,
     //   useClass: JwtAuthGuard,
