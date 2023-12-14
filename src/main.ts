@@ -7,6 +7,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './interceptors/response.interceptor';
 import { LoggingInterceptor } from './interceptors/logging.interceotpr';
 import cookieParser from 'cookie-parser';
+import express from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -22,12 +23,13 @@ async function bootstrap() {
     defaultVersion: ['1'],
   });
   app.use(cookieParser());
+  app.use(express.json());
 
   app.enableCors({
-    origin: '*',
+    origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
-    optionsSuccessStatus: 204,
+    credentials: true,
   });
   const port = configService.get<string>('PORT');
   await app.listen(port);

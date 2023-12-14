@@ -38,7 +38,7 @@ export class AuthController {
     return { _id: user._id, createdAt: user.createdAt };
   }
 
-  @ResponseMessage('Register a new user')
+  @ResponseMessage('get user infomation')
   @Get('account')
   account(@User() user: IUser) {
     return { user };
@@ -62,7 +62,7 @@ export class AuthController {
   @ResponseMessage('User logout')
   @Post('logout')
   async logout(@User() user, @Res({ passthrough: true }) res: Response) {
-    res.clearCookie('refresh_tokeb');
+    res.clearCookie('refresh_token');
     const result = await this.authService.logout(user);
     return result;
   }

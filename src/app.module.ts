@@ -9,6 +9,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './interceptors/response.interceptor';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TransformInterceptor } from './interceptors/response.interceptor';
     UsersModule,
     AuthModule,
     CompaniesModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [

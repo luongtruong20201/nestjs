@@ -76,30 +76,29 @@ export class UsersService {
     }
   }
 
-  async findAll(qs: string, limit: number, currentPage: number) {
+  async findAll(qs: string, pageSize: number, current: number) {
     const { filter, sort, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
 
-    const offset = (currentPage - 1) * limit;
-    const defaultLimit = limit ? limit : 10;
+    const offset = (current - 1) * pageSize;
+    const defaultLimit = pageSize ? pageSize : 10;
     const totalItems = (await this.userModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
-
+    console.log(filter);
     const users = await this.userModel
       .find(filter)
       .skip(offset)
-      .limit(limit)
+      .limit(pageSize)
       .sort(sort as any)
       .select(projection)
       .populate(population)
-      .select('-password')
+      .select('-password -refreshToken')
       .exec();
-    console.log(filter);
     return {
       meta: {
-        current: currentPage,
-        pageSize: limit,
+        current: current,
+        pageSize: pageSize,
         pages: totalPages,
         total: totalItems,
       },

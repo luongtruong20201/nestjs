@@ -7,7 +7,6 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/users.interface';
 import mongoose from 'mongoose';
 import aqp from 'api-query-params';
-import { isEmpty } from 'class-validator';
 
 @Injectable()
 export class CompaniesService {
@@ -29,28 +28,26 @@ export class CompaniesService {
     return company;
   }
 
-  async findAll(currentPage: number, limit: number, qs: string) {
+  async findAll(current: number, pageSize: number, qs: string) {
     const { filter, sort, projection, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
-
-    const offset = (currentPage - 1) * limit;
-    const defaultLimit = limit ? limit : 10;
+    delete filter.current;
+    delete filter.pageSize;
+    const offset = (current - 1) * pageSize;
+    const defaultLimit = pageSize ? pageSize : 10;
     const totalItems = (await this.companyModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
-
     const companies = await this.companyModel
       .find(filter)
-      .skip(offset)
-      .limit(limit)
       .sort(sort as any)
+      .skip(offset)
+      .limit(pageSize)
       .select(projection)
       .populate(population)
       .exec();
     return {
       meta: {
-        current: currentPage,
-        pageSize: limit,
+        current: current,
+        pageSize: pageSize,
         pages: totalPages,
         total: totalItems,
       },
@@ -58,8 +55,8 @@ export class CompaniesService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  findOne(id: string) {
+    return this.companyModel.findOne({ _id: id });
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {

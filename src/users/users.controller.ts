@@ -30,10 +30,10 @@ export class UsersController {
   @Get()
   findAll(
     @Query() qs: string,
-    @Query('limit') limit: string,
-    @Query('page') page: string,
+    @Query('current') current: string,
+    @Query('pageSize') pageSize: string,
   ) {
-    return this.usersService.findAll(qs, +limit, +page);
+    return this.usersService.findAll(qs, +pageSize, +current);
   }
 
   @ResponseMessage('Get profile')
@@ -59,7 +59,6 @@ export class UsersController {
   @ResponseMessage('Delete a user')
   @Delete(':id')
   remove(@Param('id') id: string, @User() user: IUser) {
-    console.log(user);
     return this.usersService.remove(id, user);
   }
 }
