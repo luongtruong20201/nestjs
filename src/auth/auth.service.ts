@@ -110,4 +110,9 @@ export class AuthService {
       throw new BadRequestException('Token không họp lệ hoặc hết hạn');
     }
   }
+
+  async logout(user: IUser) {
+    await this.usersService.updateUserToken(user._id, '');
+    return 'ok';
+  }
 }

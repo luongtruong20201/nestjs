@@ -58,4 +58,12 @@ export class AuthController {
     );
     return result;
   }
+
+  @ResponseMessage('User logout')
+  @Post('logout')
+  async logout(@User() user, @Res({ passthrough: true }) res: Response) {
+    res.clearCookie('refresh_tokeb');
+    const result = await this.authService.logout(user);
+    return result;
+  }
 }
