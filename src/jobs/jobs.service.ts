@@ -85,7 +85,6 @@ export class JobsService {
       { _id: id },
       { ...updateJobDto, updatedBy: { _id: user._id, email: user.email } },
     );
-    console.log(result);
     return result;
   }
 

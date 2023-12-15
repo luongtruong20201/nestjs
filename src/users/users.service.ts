@@ -85,7 +85,6 @@ export class UsersService {
     const defaultLimit = pageSize ? pageSize : 10;
     const totalItems = (await this.userModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
-    console.log(filter);
     const users = await this.userModel
       .find(filter)
       .skip(offset)

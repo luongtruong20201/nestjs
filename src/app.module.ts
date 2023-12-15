@@ -7,9 +7,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { CompaniesModule } from './companies/companies.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { TransformInterceptor } from './interceptors/response.interceptor';
 import { JobsModule } from './jobs/jobs.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -30,6 +29,7 @@ import { JobsModule } from './jobs/jobs.module';
     AuthModule,
     CompaniesModule,
     JobsModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [
