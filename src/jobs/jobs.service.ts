@@ -71,7 +71,7 @@ export class JobsService {
         pages: totalPages,
         total: totalItems,
       },
-      jobs,
+      result: jobs,
     };
   }
 
@@ -98,5 +98,10 @@ export class JobsService {
     ]);
 
     return result;
+  }
+
+  async checkJobExist(id: string) {
+    const job = await this.findOne(id);
+    return job === null ? false : true;
   }
 }

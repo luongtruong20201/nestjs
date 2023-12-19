@@ -51,7 +51,7 @@ export class CompaniesService {
         pages: totalPages,
         total: totalItems,
       },
-      companies,
+      result: companies,
     };
   }
 
@@ -75,5 +75,10 @@ export class CompaniesService {
     );
     const result = await this.companyModel.softDelete({ _id: id });
     return result;
+  }
+
+  async checkCompanyExist(id: string) {
+    const company = await this.companyModel.findById(id);
+    return company === null ? false : true;
   }
 }

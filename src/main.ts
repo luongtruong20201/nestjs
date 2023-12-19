@@ -8,6 +8,7 @@ import { TransformInterceptor } from './interceptors/response.interceptor';
 import { LoggingInterceptor } from './interceptors/logging.interceotpr';
 import cookieParser from 'cookie-parser';
 import express from 'express';
+import path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -24,7 +25,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.use(express.json());
-
+  app.use(express.static(path.resolve(__dirname, '..', 'public')));
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
