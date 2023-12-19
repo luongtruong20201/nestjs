@@ -46,6 +46,7 @@ export class ResumesService {
       ],
       createdBy: updatedBy,
       url,
+      companyId,
     };
 
     const result = await this.resumeModel.create(data);
@@ -85,7 +86,6 @@ export class ResumesService {
   }
 
   async update(id: string, status: string, user: IUser) {
-    console.log(status);
     const { _id, email } = user;
     const history = {
       status: status,

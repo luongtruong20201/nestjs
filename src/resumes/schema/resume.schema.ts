@@ -8,7 +8,10 @@ export class Resume {
   @Prop()
   email: string;
 
-  @Prop()
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  })
   userId: mongoose.Schema.Types.ObjectId;
 
   @Prop()
@@ -17,10 +20,10 @@ export class Resume {
   @Prop()
   status: string;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Company' })
   companyId: mongoose.Schema.Types.ObjectId;
 
-  @Prop()
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Job' })
   jobId: mongoose.Schema.Types.ObjectId;
 
   @Prop({ type: mongoose.Schema.Types.Array })
