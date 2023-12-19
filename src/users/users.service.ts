@@ -7,6 +7,7 @@ import { hashSync, genSaltSync, compareSync } from 'bcryptjs';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -106,7 +107,10 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.userModel.findOne({ _id: id }).select('-password');
+    const user = await this.userModel
+      .findOne({ _id: id })
+      .select('-password')
+      .populate({ path: 'role', select: { name: 1, _id: 1 } });
     return user;
   }
 
@@ -130,6 +134,15 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Người dùng không tồn tại');
+    }
+
+    const foundUser = await this.userModel.findById(id);
+    if (foundUser.email === 'luongtruong20201@gmail.com') {
+      throw new BadRequestException('Không thể xóa tài khoản admin');
+    }
+
     const [result] = await Promise.all([
       this.userModel.softDelete({ _id: id }),
       this.userModel.updateOne(
@@ -141,7 +154,9 @@ export class UsersService {
   }
 
   async findOneByEmail(email: string) {
-    const user = await this.userModel.findOne({ email });
+    const user = await this.userModel
+      .findOne({ email })
+      .populate({ path: 'role', select: { name: 1, permissions: 1 } });
     return user;
   }
 
