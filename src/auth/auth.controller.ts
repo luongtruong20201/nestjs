@@ -14,12 +14,14 @@ import { UsersService } from 'src/users/users.service';
 import { RegisterUserDto } from 'src/users/dto/create-user.dto';
 import { Request, Response } from 'express';
 import { IUser } from 'src/users/users.interface';
+import { RolesService } from 'src/roles/roles.service';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
+    private readonly rolesService: RolesService,
   ) {}
 
   @ResponseMessage('User login')
@@ -40,7 +42,9 @@ export class AuthController {
 
   @ResponseMessage('get user infomation')
   @Get('account')
-  account(@User() user: IUser) {
+  async account(@User() user: IUser) {
+    const temp = (await this.rolesService.findOne(user.role._id)) as any;
+    user.permissions = temp?.permissions ?? [];
     return { user };
   }
 

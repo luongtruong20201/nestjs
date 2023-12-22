@@ -43,7 +43,7 @@ export class FilesController {
     )
     file: Express.Multer.File,
   ) {
-    return file.filename;
+    return { fileName: file.filename };
   }
 
   @Get()

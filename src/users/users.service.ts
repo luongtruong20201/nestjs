@@ -8,11 +8,14 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
+import { USER_ROLE } from 'src/databases/sample';
+import { Role, RoleDocument } from 'src/roles/schemas/role.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(Role.name) private roleModel: SoftDeleteModel<RoleDocument>,
   ) {}
 
   async checkExistEmail(email: string) {
@@ -64,6 +67,7 @@ export class UsersService {
     const isExisted = await this.checkExistEmail(email);
     if (isExisted) {
       const hashPassword = this.getHashPassword(password);
+      const userRole = await this.roleModel.findOne({ name: USER_ROLE });
       const user = await this.userModel.create({
         address,
         age,
@@ -71,7 +75,7 @@ export class UsersService {
         gender,
         name,
         password: hashPassword,
-        role: 'USER',
+        role: userRole?._id,
       });
       return user;
     }
@@ -102,7 +106,7 @@ export class UsersService {
         pages: totalPages,
         total: totalItems,
       },
-      users,
+      result: users,
     };
   }
 
@@ -156,7 +160,7 @@ export class UsersService {
   async findOneByEmail(email: string) {
     const user = await this.userModel
       .findOne({ email })
-      .populate({ path: 'role', select: { name: 1, permissions: 1 } });
+      .populate({ path: 'role', select: { name: 1 } });
     return user;
   }
 
@@ -165,6 +169,9 @@ export class UsersService {
   }
 
   async findUserByToken(refreshToken: string) {
-    return await this.userModel.findOne({ refreshToken });
+    return await this.userModel.findOne({ refreshToken }).populate({
+      path: 'role',
+      select: { name: 1 },
+    });
   }
 }
