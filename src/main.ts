@@ -9,6 +9,7 @@ import { LoggingInterceptor } from './interceptors/logging.interceotpr';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import path from 'path';
+import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -27,6 +28,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(express.json());
   app.use(express.static(path.resolve(__dirname, '..', 'public')));
+  app.use(helmet());
   app.enableCors({
     origin: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
