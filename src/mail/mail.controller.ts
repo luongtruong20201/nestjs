@@ -26,45 +26,65 @@ export class MailController {
 
   @Get()
   @Public()
+  // @Cron(CronExpression.EVERY_30_SECONDS)
   @ResponseMessage('Send email')
-  @Cron(CronExpression.EVERY_30_SECONDS)
   async sendMail() {
-    let jobs = [];
-
     const subscribers = await this.subscriberModel.find({});
 
-    for (const sub of subscribers) {
-      const subSkills = sub.skills;
-
-      const jobsWithSkill = await this.jobModel.find({
-        skills: { $in: subSkills },
-      });
-
-      if (jobsWithSkill && jobsWithSkill.length > 0) {
-        jobs = jobsWithSkill.map((job) => {
-          return {
-            name: job?.name,
-            skills: job?.skills,
-            salary: job?.salary.toLocaleString(),
-            company: job?.company?.name,
-          };
+    await Promise.all(
+      subscribers.map(async (sub) => {
+        const jobsWithSkills = await this.jobModel.find({
+          skills: { $in: sub.skills },
         });
-        this.mailerService
-          .sendMail({
-            to: 'quynh01s9traveldn@gmail.com',
-            // to: 'luongtruong20201@gmail.com',
+
+        let jobs = [];
+        if (jobsWithSkills && jobsWithSkills.length > 0) {
+          jobs = jobsWithSkills.map((job) => {
+            return {
+              name: job?.name,
+              skills: job?.skills,
+              salary: job?.salary?.toLocaleString(),
+              company: job?.company?.name,
+            };
+          });
+
+          return this.mailerService.sendMail({
+            to: sub.email,
             from: 'LQT',
-            subject: 'abc',
+            subject: 'Job from luongtruong20201.com.vn',
             template: 'new-job.hbs',
             context: {
-              receiver: 'LQT',
+              receiver: sub.name,
               jobs,
             },
-          })
-          .then(() => {
-            console.log('ok');
           });
-      }
+        }
+      }),
+    );
+  }
+
+  async sendMailToReceiver(sub: any, jobsWithSkill: any) {
+    let jobs = [];
+    if (jobsWithSkill && jobsWithSkill.length > 0) {
+      jobs = jobsWithSkill.map((job) => {
+        return {
+          name: job?.name,
+          skills: job?.skills,
+          salary: job?.salary.toLocaleString(),
+          company: job?.company?.name,
+        };
+      });
+      return this.mailerService.sendMail({
+        to: sub.email,
+        // to: 'luongtruong20201@gmail.com',
+        from: 'LQT',
+        subject: 'abc',
+        template: 'new-job.hbs',
+        context: {
+          receiver: 'LQT',
+          jobs,
+        },
+      });
     }
   }
 }
