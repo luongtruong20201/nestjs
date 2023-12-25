@@ -33,9 +33,9 @@ export class DatabasesService implements OnModuleInit {
     const isInit = this.configService.get<string>('SHOULD_INIT');
     if (Boolean(isInit)) {
       const [countUser, countPermission, countRole] = await Promise.all([
-        this.userModel.count({}),
-        this.permissionModel.count({}),
-        this.roleModel.count({}),
+        this.userModel.countDocuments({}),
+        this.permissionModel.countDocuments({}),
+        this.roleModel.countDocuments({}),
       ]);
 
       if (countPermission === 0) {
