@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY package*.json .
 COPY tsconfig.json .
-COPY .env .
+COPY .env .env
 COPY ./src ./src
 
 RUN npm i -g @nestjs/cli
