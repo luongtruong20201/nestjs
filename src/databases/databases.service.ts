@@ -31,18 +31,23 @@ export class DatabasesService implements OnModuleInit {
 
   async onModuleInit() {
     const isInit = this.configService.get<string>('SHOULD_INIT');
-    if (Boolean(isInit)) {
+    console.log('check isInit: ', isInit);
+    if (Boolean(isInit) === true) {
       const [countUser, countPermission, countRole] = await Promise.all([
         this.userModel.countDocuments({}),
         this.permissionModel.countDocuments({}),
         this.roleModel.countDocuments({}),
       ]);
 
+      console.log('check: ', countUser, countPermission, countRole);
+
       if (countPermission === 0) {
+        console.log('run here');
         await this.permissionModel.insertMany(INIT_PERMISSIONS);
       }
 
       if (countRole === 0) {
+        console.log('run here');
         const permissions = await this.permissionModel.find({}).select('_id');
         await this.roleModel.insertMany([
           {
@@ -61,6 +66,7 @@ export class DatabasesService implements OnModuleInit {
       }
 
       if (countUser === 0) {
+        console.log('run here');
         const adminRole = await this.roleModel.findOne({ name: ADMIN_ROLE });
         const userRole = await this.roleModel.findOne({ name: USER_ROLE });
         await this.userModel.insertMany([
@@ -76,7 +82,7 @@ export class DatabasesService implements OnModuleInit {
             role: adminRole?._id,
           },
           {
-            name: "I'm Hỏi Dân IT",
+            name: "I'm Lương Quang Trường",
             email: 'luongtruong20201@gmail.com',
             password: this.usersService.getHashPassword(
               this.configService.get<string>('INIT_PASSWORD'),

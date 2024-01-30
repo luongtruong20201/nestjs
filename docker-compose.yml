@@ -6,36 +6,36 @@ services:
     container_name: mongodb
     restart: always
     ports:
-      - "27017:27017"
+      - "27018:27017"
     networks:
       - app-network
 
     expose:
-      - 27017
-  app:
-    depends_on:
-      - mongo-db
-    build: 
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    env_file:
-      - .env
-    environment:
-      - PORT=${PORT}
-      - MONGO_URL=${MONGO_URL}
-      - JWT_ACCESS_TOKEN_SECRET=${JWT_ACCESS_TOKEN_SECRET}
-      - JWT_ACCESS_TOKEN_EXPIRE=${JWT_ACCESS_TOKEN_EXPIRE}
-      - JWT_REFRESH_TOKEN_EXPIRE=${JWT_REFRESH_TOKEN_EXPIRE}
-      - JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}
-      - SHOULD_INIT=${SHOULD_INIT}
-      - INIT_PASSWORD=${INIT_PASSWORD}
-      - EMAIL_NAME=${EMAIL_NAME}
-      - EMAIL_PASS=${EMAIL_PASS}
-    ports:
-      - "${PORT}:${PORT}"
-    networks:
-      - app-network
+      - 27018
+  # app:
+  #   depends_on:
+  #     - mongo-db
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - PORT=${PORT}
+  #     - MONGO_URL=${MONGO_URL}
+  #     - JWT_ACCESS_TOKEN_SECRET=${JWT_ACCESS_TOKEN_SECRET}
+  #     - JWT_ACCESS_TOKEN_EXPIRE=${JWT_ACCESS_TOKEN_EXPIRE}
+  #     - JWT_REFRESH_TOKEN_EXPIRE=${JWT_REFRESH_TOKEN_EXPIRE}
+  #     - JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}
+  #     - SHOULD_INIT=${SHOULD_INIT}
+  #     - INIT_PASSWORD=${INIT_PASSWORD}
+  #     - EMAIL_NAME=${EMAIL_NAME}
+  #     - EMAIL_PASS=${EMAIL_PASS}
+  #   ports:
+  #     - "${PORT}:${PORT}"
+  #   networks:
+  #     - app-network
 
 networks:
   app-network:
