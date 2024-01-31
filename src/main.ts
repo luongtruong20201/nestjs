@@ -1,6 +1,10 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe, VersioningType } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  ValidationPipe,
+  VersioningType,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -17,8 +21,10 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useGlobalGuards(new JwtAuthGuard(reflector));
-  app.useGlobalInterceptors(new TransformInterceptor(reflector));
-  app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalInterceptors(
+    new TransformInterceptor(reflector),
+    new LoggingInterceptor(),
+  );
   app.setGlobalPrefix('api');
   app.enableVersioning({
     type: VersioningType.URI,

@@ -26,7 +26,7 @@ import { HealthModule } from './health/health.module';
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URL'),
         connectionFactory: (connection: any) => {
-          console.log(configService.get("MONGO_URL"));
+          console.log(configService.get('MONGO_URL'));
           connection.plugin(softDeletePlugin);
           return connection;
         },
